@@ -108,9 +108,9 @@ public:
 			if (BcPressure < 100 && BCPressD[1] == 0) { BCPressD[1] = 10; }
 
 			//MR
-			if (MrPressure > 750 && MrPressure < 795) { MRMeter[0] = (MrPressure - 750) / 20; }
-			else if (MrPressure > 750 && MrPressure < 845) { MRMeter[1] = (MrPressure - 800) / 20; }
-			else if (MrPressure > 750 && MrPressure < 895) { MRMeter[2] = (MrPressure - 850) / 20; }
+			if (MrPressure > 750 && MrPressure < 795) { MRMeter[0] = (MrPressure - 750) / 5; }
+			else if (MrPressure > 750 && MrPressure < 845) { MRMeter[1] = (MrPressure - 800) / 5; }
+			else if (MrPressure > 750 && MrPressure < 895) { MRMeter[2] = (MrPressure - 850) / 5; }
 
 			MRPress = fabs(MrPressure);
 			MRPressD[0] = fabs(MrPressure) / 100;
