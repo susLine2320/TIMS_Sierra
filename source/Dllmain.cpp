@@ -31,6 +31,7 @@ ATS_API void WINAPI Load(void)
 	g_tims.Load();
 	g_meter.Load();
 	g_sub.load();
+	g_dead.load();
 }
 
 ATS_API int WINAPI GetPluginVersion(void)
@@ -70,6 +71,7 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 
 	g_tims.Execute(); //TIMS表示器
 	g_meter.Execute(); //メーター表示器
+	g_dead.execute(); //電圧関連
 	g_spp.Execute(); //誤通過防止装置
 
 	// ハンドル出力
