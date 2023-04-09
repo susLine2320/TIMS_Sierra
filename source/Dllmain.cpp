@@ -8,6 +8,7 @@
 #include "main.h"
 #include "tims.h"
 #include "Meter.h"
+#include "dead.h"
 #include "spp.h"
 #include "sub.h"
 
@@ -15,6 +16,7 @@ TIMS g_tims; //TIMS表示器
 Meter g_meter; //メーター表示器
 SPP g_spp; //誤通過防止装置
 Sub g_sub; //その他
+DEAD g_dead;
 
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
@@ -78,7 +80,7 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 
 	g_output.Reverser = g_reverser;
 
-	if (g_time > g_sub.AccelCutting)
+	if (g_time > g_sub.AccelCutting && g_dead.VCB_ON == 1)
 		g_output.Power = g_powerNotch;
 	else
 		g_output.Power = 0;
@@ -125,7 +127,27 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 	panel[32] = g_meter.AccelDelay; //力行指令
 	panel[30] = g_meter.BrakeDelay; //ブレーキ指令
 	panel[31] = g_meter.BrakeDelay == g_emgBrake ? 1 : 0; //非常ブレーキ
-
+	//電圧類
+	panel[217] = g_dead.AC; //交流
+	panel[218] = g_dead.DC; //直流
+	panel[219] = g_dead.CVacc; //制御電圧異常
+	panel[220] = g_dead.CVacc10; //制御電圧[10位]
+	panel[221] = g_dead.CVacc1; //制御電圧[1位]
+	panel[222] = g_dead.ACacc; //交流電圧異常
+	panel[223] = g_dead.ACacc10000; //交流電圧[10000位]
+	panel[224] = g_dead.ACacc1000; //交流電圧[1000位]
+	panel[225] = g_dead.ACacc100; //交流電圧[100位]
+	panel[226] = g_dead.DCacc; //直流電圧異常
+	panel[227] = g_dead.DCacc1000; //直流電圧[1000位]
+	panel[228] = g_dead.DCacc100; //直流電圧[100位]
+	panel[229] = g_dead.DCacc10; //直流電圧[10位]
+	panel[230] = g_dead.Cvmeter; //制御指針
+	panel[231] = g_dead.Acmeter; //交流指針
+	panel[232] = g_dead.Dcmeter; //直流指針
+	panel[233] = g_dead.Accident; //事故
+	panel[234] = g_dead.Tp; //三相
+	panel[236] = g_dead.VCB; //VCB
+	panel[235] = g_dead.alert_ACDC > 0 ? g_dead.alert_ACDC + ((g_time % 800) / 400) : 0; //交直切換
 
 	//TIMS上部表示
 	// 時計

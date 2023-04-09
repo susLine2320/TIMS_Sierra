@@ -173,6 +173,7 @@
     <None Include="Ats.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dead.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Meter.h" />
     <ClInclude Include="resource.h" />

@@ -13,7 +13,7 @@ private:
 	int m_emgAnnounce; //非常ブレーキ放送
 	int m_airApplyEmg; //ブレーキ昇圧音（非常）
 	int m_updateInfo; //運行情報更新
-	int m_deltaUpdate; //
+	int m_deltaUpdate; //前回運行情報更新
 public:
 	int BcPressCut; //ブレーキ減圧する
 	int RelayState; //走行検知リレー
