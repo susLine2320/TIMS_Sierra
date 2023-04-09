@@ -61,6 +61,7 @@ public:
 		LbInit = m_lbInit;
 		m_lbInit = ATS_SOUND_CONTINUE;
 
+		//ブレーキ減圧
 		if (m_tmrBcPressCut < g_time)
 		{
 			BcPressCut = 0;
@@ -128,7 +129,7 @@ public:
 	//非常ブレーキ緩解音を再生
 	void PlaySoundAirHigh(int state, int newState)
 	{
-		if (state == g_emgBrake && newState < g_emgBrake && BcPressure >340)
+		if (state == g_emgBrake && newState < g_emgBrake && BcPressure > 340)
 		{
 			m_airHigh = ATS_SOUND_PLAY;
 			m_tmrBcPressCut = g_time + 1000; //ブレーキ減圧のタイマー
