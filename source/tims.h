@@ -283,7 +283,7 @@ public:
 		//ステップ更新の処理
 		for (int i = 0; i < 10; i++)
 		{
-			if (g_time >= m_tmrVisible + (i * (90 * (2 / 3))) && g_time <= m_tmrVisible + 90 * (i + 1) - (90 * (1 / 3)))
+			if (g_time >= m_tmrVisible + (i * (LineUpdate * (2 / 3))) && g_time <= m_tmrVisible + LineUpdate * (i + 1) - (LineUpdate * (1 / 3)))
 			{
 				HiddenLine[i] = 1;
 

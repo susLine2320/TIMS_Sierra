@@ -271,4 +271,17 @@ public:
 			break;
 		}
 	}
+
+	//Œğ’¼ØŠ·‚ğs‚¤
+	void SetACDC(int state)
+	{
+		step_ACDC = state;
+		tmr_ACDC = g_time;
+	}
+
+	//Œğ’¼ØŠ·‚Ì‚¨’m‚ç‚¹
+	void AlartACDC(int state)
+	{
+		alert_ACDC = state;
+	}
 };

@@ -132,7 +132,7 @@ public:
 		if (state == g_emgBrake && newState < g_emgBrake && BcPressure > 340)
 		{
 			m_airHigh = ATS_SOUND_PLAY;
-			m_tmrBcPressCut = g_time + 1000; //ブレーキ減圧のタイマー
+			m_tmrBcPressCut = g_time + EbCut; //ブレーキ減圧のタイマー
 		}
 	}
 
