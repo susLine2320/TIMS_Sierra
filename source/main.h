@@ -19,6 +19,7 @@ int ETIMS; //TIMS表示の有効化
 int EVmeter; //電圧計の有効化
 int EUD; //ユニット表示他有効化
 int D01ABnum; //表示する駅数
+int Row6; //6段目の扱い
 int LVindex; //架線電圧計
 int HVindex; //架線電圧計
 int BCMRType; //BC/MR圧計仕様

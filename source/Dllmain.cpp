@@ -66,11 +66,12 @@ ATS_API void WINAPI SetVehicleSpec(ATS_VEHICLESPEC vehicleSpec)
 	BCMRType = ini.Disp.BCMRType;
 	DispType = ini.Disp.DispType;
 	D01ABnum = ini.Disp.D01ABnum >= 1 && ini.Disp.D01ABnum <= 6 ? ini.Disp.D01ABnum : 5;
+	Row6 = ini.Disp.Row6;
 	EMeter = ini.Disp.EnableMeterDisp;
 	ETIMS = ini.Disp.EnableTIMSDisp;
 	EVmeter = ini.Disp.EnableVmeter;
 	EUD = ini.Disp.UnitDispEnable;
-	LineUpdate = ini.Disp.LineUpdate >= 0 && ini.Disp.LineUpdate < 250 ? ini.Disp.LineUpdate : 0;
+	LineUpdate = ini.Disp.LineUpdate >= 0 && ini.Disp.LineUpdate < 250 ? ini.Disp.LineUpdate : 90;
 	EbCut = ini.Emulate.ebCutPressure;
 	g_sub.event_lbInit = ini.Emulate.lbInit;
 }
@@ -234,6 +235,8 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 		panel[120] = g_tims.From; //‰^sƒpƒ^[ƒ“Žn”­
 		panel[121] = g_tims.Destination; //‰^sƒpƒ^[ƒ“sæ
 		panel[208] = g_tims.For; //—ñŽÔsæ
+		panel[209] = g_tims.This; //Ž©‰wiTIS—pj
+		panel[210] = g_tims.Next; //ŽŸ‰w
 
 		// ƒXƒ^ƒtƒe[ƒuƒ‹
 		//“d—ñ‹¤’Ê
@@ -320,14 +323,28 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 		else
 		{
 			//“dŽÔƒXƒ^ƒt
-			panel[170] = g_tims.After; //ŽŸÌŽž‰w
-			panel[171] = g_tims.AfterTimeA[0]; //ŽŸÌŽž‰w’…ŽžH
-			panel[172] = g_tims.AfterTimeA[1]; //ŽŸÌŽž‰w’…ŽžM
-			panel[173] = g_tims.AfterTimeA[2]; //ŽŸÌŽž‰w’…ŽžS
-			panel[174] = g_tims.AfterTimeL[0]; //ŽŸÌŽž‰w”­ŽžH
-			panel[175] = g_tims.AfterTimeL[1]; //ŽŸÌŽž‰w”­ŽžM
-			panel[176] = g_tims.AfterTimeL[2]; //ŽŸÌŽž‰w”­ŽžS
-			panel[177] = g_tims.AfterTrack; //ŽŸÌŽž‰w”Ôü
+			if (Row6 != 1)
+			{
+				panel[170] = g_tims.After; //ŽŸÌŽž‰w
+				panel[171] = g_tims.AfterTimeA[0]; //ŽŸÌŽž‰w’…ŽžH
+				panel[172] = g_tims.AfterTimeA[1]; //ŽŸÌŽž‰w’…ŽžM
+				panel[173] = g_tims.AfterTimeA[2]; //ŽŸÌŽž‰w’…ŽžS
+				panel[174] = g_tims.AfterTimeL[0]; //ŽŸÌŽž‰w”­ŽžH
+				panel[175] = g_tims.AfterTimeL[1]; //ŽŸÌŽž‰w”­ŽžM
+				panel[176] = g_tims.AfterTimeL[2]; //ŽŸÌŽž‰w”­ŽžS
+				panel[177] = g_tims.AfterTrack; //ŽŸÌŽž‰w”Ôü
+			}
+			else
+			{
+				panel[170] = g_tims.HiddenLine[5] ? 0 : g_tims.Station[5]; //‰w–¼•\Ž¦6
+				panel[171] = g_tims.HiddenLine[5] ? 0 : g_tims.Arrive[5][0]; //“ž’…Žž6H
+				panel[172] = g_tims.HiddenLine[5] ? 0 : g_tims.Arrive[5][1]; //“ž’…Žž6M
+				panel[173] = g_tims.HiddenLine[5] ? 0 : g_tims.Arrive[5][2]; //“ž’…Žž6S
+				panel[174] = g_tims.HiddenLine[5] ? 0 : g_tims.Leave[5][0]; //”­ŽÔŽž6H
+				panel[175] = g_tims.HiddenLine[5] ? 0 : g_tims.Leave[5][1]; //”­ŽÔŽž6M
+				panel[176] = g_tims.HiddenLine[5] ? 0 : g_tims.Leave[5][2]; //”­ŽÔŽž6S
+				panel[177] = g_tims.HiddenLine[5] ? 0 : g_tims.Track[5]; //ŽŸ‰w”Ôü6
+			}
 
 			panel[178] = g_tims.Before; //’¼‘OÌŽž‰w
 			panel[179] = g_tims.BeforeTime[0]; //’¼‘OÌŽž‰w’…ŽžH

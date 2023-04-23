@@ -1,5 +1,5 @@
 //
-// Generated on 2023/04/09 by inimoni 
+// Generated on 2023/04/23 by inimoni 
 // Line-16による注：このファイルはinimoniにより制作しました。
 
 /*
@@ -120,6 +120,7 @@ public:
         int      EnableVmeter;            //電圧計表示の有効化
         int      UnitDispEnable;          //情報表示の有効化
         int      D01ABnum;                //表示する駅数
+        int      Row6;                    //6段目の扱い（電車用のみ）
         int      LVMeterindex;            //制御電圧計
         int      HVMeterindex;            //架線電圧計
         int      NextStopType;            //停車駅点滅仕様
@@ -155,6 +156,7 @@ protected:
         inimoni::inirw(r, f, s, _T("EnableVmeter     "), Disp.EnableVmeter);
         inimoni::inirw(r, f, s, _T("UnitDispEnable   "), Disp.UnitDispEnable);
         inimoni::inirw(r, f, s, _T("D01ABnum         "), Disp.D01ABnum);
+        inimoni::inirw(r, f, s, _T("Row6             "), Disp.Row6);
         inimoni::inirw(r, f, s, _T("LVMeterindex     "), Disp.LVMeterindex);
         inimoni::inirw(r, f, s, _T("HVMeterindex     "), Disp.HVMeterindex);
         inimoni::inirw(r, f, s, _T("NextStopType     "), Disp.NextStopType);
@@ -178,6 +180,7 @@ protected:
         Disp.EnableVmeter = 1;
         Disp.UnitDispEnable = 1;
         Disp.D01ABnum = 5;
+        Disp.Row6 = 0;
         Disp.LVMeterindex = 73;
         Disp.HVMeterindex = 75;
         Disp.NextStopType = 0;
