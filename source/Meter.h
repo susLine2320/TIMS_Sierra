@@ -127,7 +127,7 @@ public:
 			AMMeterA[1] = fabs(Current);
 			AMMeterD[0] = fabs(Current) / 1000;
 			AMMeterD[1] = (fabs(Current) / 100) - (AMMeterD[0] * 10);
-			AMMeterD[2] = (fabs(Current) - (AMMeterD[0] * 100 + AMMeterD[1] * 10)) / 10;
+			AMMeterD[2] = (fabs(Current) - (AMMeterD[0] * 1000 + AMMeterD[1] * 100)) / 10;
 			AMMeterD[3] = fabs(Current) - (AMMeterD[0] * 1000 + AMMeterD[1] * 100 + AMMeterD[2] * 10);
 			if (fabs(Current) < 1000 && AMMeterD[0] == 0) { AMMeterD[0] = 10; }
 			if (fabs(Current) < 100 && AMMeterD[1] == 0) { AMMeterD[1] = 10; }
