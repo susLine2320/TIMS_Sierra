@@ -610,7 +610,7 @@ ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 			g_tims.InputLine(5, (beaconData.Optional / 10000) - 1, beaconData.Optional % 100); //制限速度
 			break;
 		case 109://駅間時間
-			g_tims.InputLine(0, (beaconData.Optional / 10000) - 1, beaconData.Optional % 10000);
+			g_tims.InputLine(9, (beaconData.Optional / 10000) - 1, beaconData.Optional % 10000);
 			break;
 		case 110://種別
 			g_tims.SetKind(beaconData.Optional);
@@ -618,8 +618,12 @@ ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 		case 111://列番
 			g_tims.SetNumber(beaconData.Optional % 10000, beaconData.Optional / 10000);
 			break;
-		case 119: //進行方向
-			g_tims.SetDirection(beaconData.Optional);
+		case 112://運行パターン
+		{
+			int from = beaconData.Optional / 100;
+			int destination = beaconData.Optional % 100;
+			g_tims.SetLeg(from * 1000 + destination);
+		}
 			break;
 		case 113: //走行距離
 		{
@@ -628,12 +632,8 @@ ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 			g_tims.SetDistance(beaconData.Distance, direction * 1000000 + data);
 		}
 			break;
-		case 112://運行パターン
-		{
-			int from = beaconData.Optional / 100;
-			int destination = beaconData.Optional % 100;
-			g_tims.SetLeg(from * 1000 + destination);
-		}
+		case 114: //走行距離
+			g_tims.SetPositionDef(beaconData.Optional);
 			break;
 		case 115:
 			g_tims.SetAfteruent(0, beaconData.Optional / 100, beaconData.Optional % 100);
@@ -646,6 +646,9 @@ ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 			break;
 		case 118:
 			g_tims.SetAfteruent(3, beaconData.Optional, 0);
+			break;
+		case 119: //進行方向
+			g_tims.SetDirection(beaconData.Optional);
 			break;
 		case 122:
 			g_tims.SetLastStop(0, beaconData.Optional);

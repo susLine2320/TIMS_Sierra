@@ -105,7 +105,8 @@ public:
 		m_nextName = 0;
 		m_nextTrack = 0;
 		m_distance = 0;
-		m_direction = 0;
+		m_direction = 1;
+		m_distDef = 0;
 
 		ResetArray();
 
@@ -129,7 +130,7 @@ public:
 		m_timerTims -= abs(g_deltaT); //毎フレーム減算
 		if (m_timerTims < 0)
 		{
-			double temp_distance = ((Location / 10) - (StartingPoint / 10)) * m_direction + m_distance;
+			double temp_distance = ((Location / 10) - (StartingPoint / 10)) * m_direction + m_distance + (m_distDef / 10);
 
 			//キロ程
 			Distance[0] = temp_distance / 100;
@@ -530,6 +531,12 @@ public:
 		m_distance = data % 1000000; //走行距離
 	}
 
+	//走行距離の設定（snp2-114）
+	void SetPositionDef(int data)
+	{
+		m_distDef = data; //列車位置の補正
+	}
+
 	//スタフテーブルの書き込み（110～116）
 	void InputLine(int column, int line, int data)
 	{
@@ -649,6 +656,7 @@ private:
 
 	double m_distance; //走行距離
 	int m_direction; //距離減算するかどうか
+	int m_distDef; //列車位置の補正
 	int m_timerTims; //TIMS表示器更新タイマー
 
 	//スタフテーブルのプッシュアップ
