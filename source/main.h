@@ -11,6 +11,9 @@ int g_time; //現在時刻[ms]
 int g_speed; //速度計の速度[km/h]
 int g_deltaT; //前フレームからのフレーム時間[ms/f]
 
+//互換モード関連
+int snp2Beacon;
+
 //INIファイル関連
 int PLampindex; //パイロットランプインデックス
 int DispType; //運転情報画面のE/M

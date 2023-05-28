@@ -48,6 +48,7 @@ ATS_API void WINAPI Load(void)
 	g_meter.Load();
 	g_sub.load();
 	g_dead.load();
+	snp2Beacon = 0;
 }
 
 ATS_API int WINAPI GetPluginVersion(void)
@@ -449,118 +450,224 @@ ATS_API void WINAPI SetSignal(int signal)
 
 ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 {
-	switch (beaconData.Type)
+	if (beaconData.Type == 615)//互換モードを判定する
 	{
-	case 30:
-		if (g_speed != 0)//駅ジャンプを除外する
-			g_spp.Recieve(beaconData.Optional % 100000);
+		snp2Beacon = beaconData.Optional == 0 ? 0 : 1;
+	}
+	switch (snp2Beacon)
+	{
+	case 0:
+	default:
+		switch (beaconData.Type)
+		{
+		case 30:
+			if (g_speed != 0)//駅ジャンプを除外する
+				g_spp.Recieve(beaconData.Optional % 100000);
+			break;
+		case 100://列番
+			g_tims.SetNumber(beaconData.Optional / 100, beaconData.Optional % 100);
+			break;
+		case 101://種別
+			g_tims.SetKind(beaconData.Optional);
+			break;
+		case 102: //進行方向
+			g_tims.SetDirection(beaconData.Optional);
+			break;
+		case 103: //走行距離
+			g_tims.SetDistance(beaconData.Distance, beaconData.Optional);
+			break;
+		case 104://運行パターン
+			g_tims.SetLeg(beaconData.Optional);
+			break;
+		case 105://次駅接近
+			if (g_speed != 0)//駅ジャンプを除外する
+				g_spp.Recieve(beaconData.Optional % 10000);
+			g_tims.Recieve(beaconData.Optional % 10000000, beaconData.Optional / 10000000); //駅ジャンプを除外しない
+			break;
+		case 106://自駅・次駅の設定
+			g_tims.SetNext(beaconData.Optional);
+			break;
+		case 107://次駅の時刻設定
+			g_tims.SetNextTime(beaconData.Optional);
+			break;
+		case 108://次駅到着番線の設定
+			g_tims.SetNextTrack(beaconData.Optional);
+			break;
+		case 109://行先の設定
+			g_tims.SetFor(beaconData.Optional);
+			break;
+		case 110://駅名
+			g_tims.InputLine(1, (beaconData.Optional / 1000) - 1, beaconData.Optional % 1000);
+			break;
+		case 111://到着時刻
+			g_tims.InputLine(2, (beaconData.Optional / 1000000) - 1, beaconData.Optional % 1000000);
+			break;
+		case 112://出発時刻
+			g_tims.InputLine(3, (beaconData.Optional / 1000000) - 1, beaconData.Optional % 1000000);
+			break;
+		case 113://番線
+			g_tims.InputLine(4, (beaconData.Optional / 100) - 1, beaconData.Optional % 100);
+			break;
+		case 114://到着制限
+			g_tims.InputLine(5, (beaconData.Optional / 100) - 1, beaconData.Optional % 100);
+			break;
+		case 115://出発制限
+			g_tims.InputLine(6, (beaconData.Optional / 100) - 1, beaconData.Optional % 100);
+			break;
+		case 116://駅間時間
+			g_tims.InputLine(0, (beaconData.Optional / 10000) - 1, beaconData.Optional % 10000);
+			break;
+		case 117:
+			g_tims.SetArrowState(beaconData.Optional);
+			break;
+		case 118:
+			g_tims.SetAfteruent(1, beaconData.Optional, 0);
+			break;
+		case 119:
+			g_tims.SetAfteruent(2, beaconData.Optional, 0);
+			break;
+		case 120:
+			g_dead.AlartACDC(beaconData.Optional);
+			break;
+		case 121:
+			g_dead.SetACDC(beaconData.Optional);
+			break;
+		case 122:
+			g_tims.SetAfteruent(0, beaconData.Optional / 100, beaconData.Optional % 100);
+			break;
+		case 123:
+			g_tims.SetAfteruent(3, beaconData.Optional, 0);
+			break;
+		case 124:
+			g_tims.SetLastStop(0, beaconData.Optional);
+			break;
+		case 125:
+			g_tims.SetLastStop(1, beaconData.Optional);
+			break;
+		case 126:
+			g_tims.SetLastStop(2, beaconData.Optional);
+			break;
+		case 127:
+			g_tims.SetLastStation(beaconData.Optional);
+			break;
+		case 128:
+			g_tims.SetTimeStationTime(0, beaconData.Optional);
+			break;
+		case 129:
+			g_tims.SetTimeStationTime(1, beaconData.Optional);
+			break;
+		case 130:
+			g_tims.SetTimeStationTime(2, beaconData.Optional);
+			break;
+		case 131:
+			g_tims.SetTimeStationTime(3, beaconData.Optional);
+			break;
+		case 132:
+			g_tims.SetTimeStationTime(4, beaconData.Optional);
+			break;
+		case 133:
+			g_tims.SetTimeStationName(0, beaconData.Optional);
+			break;
+		case 134:
+			g_tims.SetTimeStationName(1, beaconData.Optional);
+			break;
+		}
 		break;
-	case 100://列番
-		g_tims.SetNumber(beaconData.Optional / 100, beaconData.Optional % 100);
-		break;
-	case 101://種別
-		g_tims.SetKind(beaconData.Optional);
-		break;
-	case 102: //進行方向
-		g_tims.SetDirection(beaconData.Optional);
-		break;
-	case 103: //走行距離
-		g_tims.SetDistance(beaconData.Distance, beaconData.Optional);
-		break;
-	case 104://運行パターン
-		g_tims.SetLeg(beaconData.Optional);
-		break;
-	case 105://次駅接近
-		if (g_speed != 0)//駅ジャンプを除外する
-			g_spp.Recieve(beaconData.Optional % 10000);
-		g_tims.Recieve(beaconData.Optional % 10000000, beaconData.Optional / 10000000); //駅ジャンプを除外しない
-		break;
-	case 106:
-		g_tims.SetNext(beaconData.Optional);
-		break;
-	case 107:
-		g_tims.SetNextTime(beaconData.Optional);
-		break;
-	case 108:
-		g_tims.SetNextTrack(beaconData.Optional);
-		break;
-	case 109:
-		g_tims.SetFor(beaconData.Optional);
-		break;
-	case 110:
-		g_tims.InputLine(1, (beaconData.Optional / 1000) - 1, beaconData.Optional % 1000);
-		break;
-	case 111:
-		g_tims.InputLine(2, (beaconData.Optional / 1000000) - 1, beaconData.Optional % 1000000);
-		break;
-	case 112:
-		g_tims.InputLine(3, (beaconData.Optional / 1000000) - 1, beaconData.Optional % 1000000);
-		break;
-	case 113:
-		g_tims.InputLine(4, (beaconData.Optional / 100) - 1, beaconData.Optional % 100);
-		break;
-	case 114:
-		g_tims.InputLine(5, (beaconData.Optional / 100) - 1, beaconData.Optional % 100);
-		break;
-	case 115:
-		g_tims.InputLine(6, (beaconData.Optional / 100) - 1, beaconData.Optional % 100);
-		break;
-	case 116:
-		g_tims.InputLine(0, (beaconData.Optional / 10000) - 1, beaconData.Optional % 10000);
-		break;
-	case 117:
-		g_tims.SetArrowState(beaconData.Optional);
-		break;
-	case 118:
-		g_tims.SetAfteruent(1, beaconData.Optional, 0);
-		break;
-	case 119:
-		g_tims.SetAfteruent(2, beaconData.Optional, 0);
-		break;
-	case 120:
-		g_dead.AlartACDC(beaconData.Optional);
-		break;
-	case 121:
-		g_dead.SetACDC(beaconData.Optional);
-		break;
-	case 122:
-		g_tims.SetAfteruent(0, beaconData.Optional / 100, beaconData.Optional % 100);
-		break;
-	case 123:
-		g_tims.SetAfteruent(3, beaconData.Optional, 0);
-		break;
-	case 124:
-		g_tims.SetLastStop(0, beaconData.Optional);
-		break;
-	case 125:
-		g_tims.SetLastStop(1, beaconData.Optional);
-		break;
-	case 126:
-		g_tims.SetLastStop(2, beaconData.Optional);
-		break;
-	case 127:
-		g_tims.SetLastStation(beaconData.Optional);
-		break;
-	case 128:
-		g_tims.SetTimeStationTime(0, beaconData.Optional);
-		break;
-	case 129:
-		g_tims.SetTimeStationTime(1, beaconData.Optional);
-		break;
-	case 130:
-		g_tims.SetTimeStationTime(2, beaconData.Optional);
-		break;
-	case 131:
-		g_tims.SetTimeStationTime(3, beaconData.Optional);
-		break;
-	case 132:
-		g_tims.SetTimeStationTime(4, beaconData.Optional);
-		break;
-	case 133:
-		g_tims.SetTimeStationName(0, beaconData.Optional);
-		break;
-	case 134:
-		g_tims.SetTimeStationName(1, beaconData.Optional);
+	case 1:
+		switch (beaconData.Type)
+		{
+		case 8:
+			if (g_speed != 0)//駅ジャンプを除外する
+				g_spp.Recieve(beaconData.Optional % 100000);
+			break;
+		case 100://次駅接近
+			if (g_speed != 0)//駅ジャンプを除外する
+				g_spp.Recieve(beaconData.Optional % 10000);
+			g_tims.Recieve(beaconData.Optional % 10000000, beaconData.Optional / 10000000); //駅ジャンプを除外しない
+			break;
+		case 102://自駅・次駅の設定・次駅時刻の設定
+			if (beaconData.Optional >= 10000)
+			{
+				g_tims.SetNextTime(beaconData.Optional);
+			}
+			else
+			{
+				int from = beaconData.Optional / 100;
+				int next = beaconData.Optional % 100;
+				g_tims.SetNext(from * 1000 + next);
+			}
+			break;
+		case 105://駅名
+			g_tims.InputLine(1, (beaconData.Optional / 100) - 1, beaconData.Optional % 100);
+			break;
+		case 106://到着時刻
+			g_tims.InputLine(7, (beaconData.Optional / 1000000) - 1, beaconData.Optional % 1000000);
+			break;
+		case 107://出発時刻
+			g_tims.InputLine(8, (beaconData.Optional / 1000000) - 1, beaconData.Optional % 1000000);
+			break;
+		case 108://番線・制限
+			g_tims.InputLine(4, (beaconData.Optional / 10000) - 1, ((beaconData.Optional % 10000) - (beaconData.Optional % 100)) / 100); //到着番線
+			g_tims.InputLine(5, (beaconData.Optional / 10000) - 1, beaconData.Optional % 100); //制限速度
+			break;
+		case 109://駅間時間
+			g_tims.InputLine(0, (beaconData.Optional / 10000) - 1, beaconData.Optional % 10000);
+			break;
+		case 110://種別
+			g_tims.SetKind(beaconData.Optional);
+			break;
+		case 111://列番
+			g_tims.SetNumber(beaconData.Optional % 10000, beaconData.Optional / 10000);
+			break;
+		case 119: //進行方向
+			g_tims.SetDirection(beaconData.Optional);
+			break;
+		case 113: //走行距離
+			int direction = beaconData.Optional / 10000;
+			int data = beaconData.Optional % 10000;
+			g_tims.SetDistance(beaconData.Distance, direction * 1000000 + data);
+			break;
+		case 112://運行パターン
+			int from = beaconData.Optional / 100;
+			int destination = beaconData.Optional % 100;
+			g_tims.SetLeg(from * 1000 + destination);
+			break;
+			/*
+		case 109:
+			g_tims.SetFor(beaconData.Optional);
+			break;
+			*/
+		case 115:
+			g_tims.SetAfteruent(0, beaconData.Optional / 100, beaconData.Optional % 100);
+			break;
+		case 116:
+			g_tims.SetAfteruent(1, beaconData.Optional, 0);
+			break;
+		case 117:
+			g_tims.SetAfteruent(2, beaconData.Optional, 0);
+			break;
+		case 118:
+			g_tims.SetAfteruent(3, beaconData.Optional, 0);
+			break;
+		case 122:
+			g_tims.SetLastStop(0, beaconData.Optional);
+			break;
+		case 123:
+			g_tims.SetLastStop(2, beaconData.Optional);
+			break;
+		case 124: //降車駅設定
+			g_tims.SetLastStation(beaconData.Optional);
+			break;
+		case 125: //行路表矢印
+			g_tims.SetArrowState(beaconData.Optional);
+			break;
+		case 201:
+			g_dead.AlartACDC(beaconData.Optional);
+			break;
+		case 200:
+			g_dead.SetACDC(beaconData.Optional);
+			break;
+		}
 		break;
 	}
 }

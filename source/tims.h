@@ -539,6 +539,18 @@ public:
 			Span[line][0] = data / 100;
 			Span[line][1] = (data % 100) / 5;
 			break;
+		case 9: //‰wŠÔ‘–sŠÔsnp2
+			Span[line][0] = data / 100;
+			Span[line][1] = (data % 100) / 5;
+			if (Span[line][0] == 0)
+				Span[line][0] = 60;
+			else if (Span[line][0] == 60)
+				Span[line][0] = 0;
+			if (Span[line][1] == 0)
+				Span[line][1] = 12;
+			else if (Span[line][1] == 12)
+				Span[line][1] = 0;
+			break;
 		case 1: //‰w–¼•\¦
 			Station[line] = data;
 			break;
@@ -551,6 +563,40 @@ public:
 			Leave[line][0] = data / 10000;
 			Leave[line][1] = ((data % 10000) - (data % 100)) / 100;
 			Leave[line][2] = (data % 100) / 5;
+			break;
+		case 7: //“’…snp2
+			Arrive[line][0] = data / 10000;
+			Arrive[line][1] = ((data % 10000) - (data % 100)) / 100;
+			Arrive[line][2] = (data % 100) / 5;
+			if (Arrive[line][0] == 0)
+				Arrive[line][0] = 24;
+			else if (Arrive[line][0] == 24)
+				Arrive[line][0] = 0;
+			if (Arrive[line][1] == 0)
+				Arrive[line][1] = 60;
+			else if (Arrive[line][1] == 60)
+				Arrive[line][1] = 0;
+			if (Arrive[line][2] == 0)
+				Arrive[line][2] = 12;
+			else if (Arrive[line][2] == 12)
+				Arrive[line][2] = 0;
+			break;
+		case 8: //”­Ôsnp2
+			Leave[line][0] = data / 10000;
+			Leave[line][1] = ((data % 10000) - (data % 100)) / 100;
+			Leave[line][2] = (data % 100) / 5;
+			if (Leave[line][0] == 0)
+				Leave[line][0] = 24;
+			else if (Leave[line][0] == 24)
+				Leave[line][0] = 0;
+			if (Leave[line][1] == 0)
+				Leave[line][1] = 60;
+			else if (Leave[line][1] == 60)
+				Leave[line][1] = 0;
+			if (Leave[line][2] == 0)
+				Leave[line][2] = 12;
+			else if (Leave[line][2] == 12)
+				Leave[line][2] = 0;
 			break;
 		case 4: //”Ôü
 			Track[line] = data;
