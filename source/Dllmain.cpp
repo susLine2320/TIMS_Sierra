@@ -454,13 +454,11 @@ ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 	{
 		snp2Beacon = beaconData.Optional == 0 ? 0 : 1;
 	}
-	switch (snp2Beacon)
+	if (snp2Beacon != 1)
 	{
-	case 0:
-	default:
 		switch (beaconData.Type)
 		{
-		case 30:
+		case 30://次駅接近
 			if (g_speed != 0)//駅ジャンプを除外する
 				g_spp.Recieve(beaconData.Optional % 100000);
 			break;
@@ -517,7 +515,7 @@ ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 		case 116://駅間時間
 			g_tims.InputLine(0, (beaconData.Optional / 10000) - 1, beaconData.Optional % 10000);
 			break;
-		case 117:
+		case 117://行路表矢印
 			g_tims.SetArrowState(beaconData.Optional);
 			break;
 		case 118:
@@ -572,8 +570,9 @@ ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 			g_tims.SetTimeStationName(1, beaconData.Optional);
 			break;
 		}
-		break;
-	case 1:
+	}
+	else
+	{
 		switch (beaconData.Type)
 		{
 		case 8:
@@ -623,20 +622,19 @@ ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 			g_tims.SetDirection(beaconData.Optional);
 			break;
 		case 113: //走行距離
+		{
 			int direction = beaconData.Optional / 10000;
 			int data = beaconData.Optional % 10000;
 			g_tims.SetDistance(beaconData.Distance, direction * 1000000 + data);
+		}
 			break;
 		case 112://運行パターン
+		{
 			int from = beaconData.Optional / 100;
 			int destination = beaconData.Optional % 100;
 			g_tims.SetLeg(from * 1000 + destination);
+		}
 			break;
-			/*
-		case 109:
-			g_tims.SetFor(beaconData.Optional);
-			break;
-			*/
 		case 115:
 			g_tims.SetAfteruent(0, beaconData.Optional / 100, beaconData.Optional % 100);
 			break;
@@ -668,7 +666,6 @@ ATS_API void WINAPI SetBeaconData(ATS_BEACONDATA beaconData)
 			g_dead.SetACDC(beaconData.Optional);
 			break;
 		}
-		break;
 	}
 }
 
