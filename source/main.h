@@ -16,6 +16,7 @@ int snp2Beacon;
 
 //INIファイル関連
 int PLampindex; //パイロットランプインデックス
+int snp2Output; //互換パネル出力
 int DispType; //運転情報画面のE/M
 int EMeter; //メーター表示の有効化
 int ETIMS; //TIMS表示の有効化
