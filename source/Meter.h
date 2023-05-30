@@ -23,7 +23,7 @@ public:
 	int BCMeter[4]; //BCメータ
 	int BCPress; //BC
 	int BCPressD[3]; //デジタルBC
-	int MRMeter[3]; //MRメータ
+	int MRMeter[6]; //MRメータ
 	int MRPress; //MR
 	int MRPressD[3]; //デジタルMR
 	int AMMeter[2]; //AMメータ
@@ -52,6 +52,9 @@ public:
 		MRMeter[0] = 10;
 		MRMeter[1] = 10;
 		MRMeter[2] = 10;
+		MRMeter[3] = 10;
+		MRMeter[4] = 10;
+		MRMeter[5] = 10;
 		MRPress = 0;
 		MRPressD[0] = 10;
 		MRPressD[1] = 10;
@@ -93,6 +96,9 @@ public:
 			MRMeter[0] = 10;
 			MRMeter[1] = 10;
 			MRMeter[2] = 10;
+			MRMeter[3] = 10;
+			MRMeter[4] = 10;
+			MRMeter[5] = 10;
 
 			//BC
 			if (BcPressure < 200) { BCMeter[0] = BcPressure / 20; }
@@ -111,6 +117,9 @@ public:
 			if (MrPressure > 750 && MrPressure < 795) { MRMeter[0] = (MrPressure - 750) / 5; }
 			else if (MrPressure > 750 && MrPressure < 845) { MRMeter[1] = (MrPressure - 800) / 5; }
 			else if (MrPressure > 750 && MrPressure < 895) { MRMeter[2] = (MrPressure - 850) / 5; }
+			if (MrPressure > 700 && MrPressure < 790) { MRMeter[3] = (MrPressure - 700) / 10; }
+			else if (MrPressure > 700 && MrPressure < 890) { MRMeter[4] = (MrPressure - 800) / 10; }
+			else if (MrPressure > 700 && MrPressure < 990) { MRMeter[5] = (MrPressure - 900) / 10; }
 
 			MRPress = fabs(MrPressure);
 			MRPressD[0] = fabs(MrPressure) / 100;

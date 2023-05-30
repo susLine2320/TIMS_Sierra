@@ -148,6 +148,17 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 				panel[128] = g_meter.MRMeter[1]; //MRグラフ(800～845kPa）
 				panel[129] = g_meter.MRMeter[2]; //MRグラフ(850～895kPa）
 			}
+			else if (BCMRType == 2)
+			{
+				panel[122] = g_meter.BcCaution ? ((g_time % 1000) / 500) : 0; //200kPa警告
+				panel[123] = g_meter.BCMeter[0]; //BCグラフ(0～180kPa）
+				panel[124] = g_meter.BCMeter[1]; //BCグラフ(200～380kPa）
+				panel[125] = g_meter.BCMeter[2]; //BCグラフ(400～580kPa）
+				panel[126] = g_meter.BCMeter[3]; //BCグラフ(600～780kPa）
+				panel[127] = g_meter.MRMeter[3]; //MRグラフ(700～790kPa）
+				panel[128] = g_meter.MRMeter[4]; //MRグラフ(800～890kPa）
+				panel[129] = g_meter.MRMeter[5]; //MRグラフ(900～990kPa）
+			}
 			// ブレーキシリンダ・元空気ダメ（デジタル表示）
 			else
 			{
@@ -452,6 +463,17 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 				panel[241] = g_meter.MRMeter[1]; //MRグラフ(800～845kPa）
 				panel[242] = g_meter.MRMeter[2]; //MRグラフ(850～895kPa）
 			}
+			else if (BCMRType == 2)
+			{
+				panel[229] = g_meter.BcCaution ? ((g_time % 1000) / 500) : 0; //200kPa警告
+				panel[235] = g_meter.BCMeter[0]; //BCグラフ(0～180kPa）
+				panel[236] = g_meter.BCMeter[1]; //BCグラフ(200～380kPa）
+				panel[237] = g_meter.BCMeter[2]; //BCグラフ(400～580kPa）
+				panel[238] = g_meter.BCMeter[3]; //BCグラフ(600～780kPa）
+				panel[240] = g_meter.MRMeter[3]; //MRグラフ(700～790kPa）
+				panel[241] = g_meter.MRMeter[4]; //MRグラフ(800～890kPa）
+				panel[242] = g_meter.MRMeter[5]; //MRグラフ(900～990kPa）
+			}
 			// ブレーキシリンダ・元空気ダメ（デジタル表示）
 			else
 			{
@@ -626,9 +648,9 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 
 			//次駅表示
 			panel[110] = g_tims.HiddenLine[D01ABnum] ? 0 : (g_tims.Next * g_tims.NextBlink); //駅名表示（次駅、点滅する）
-			panel[111] = g_tims.HiddenLine[D01ABnum] ? 0 : g_tims.NextTime[0]; //次駅着時刻H
-			panel[112] = g_tims.HiddenLine[D01ABnum] ? 0 : g_tims.NextTime[1]; //次駅着時刻M
-			panel[113] = g_tims.HiddenLine[D01ABnum] ? 0 : g_tims.NextTime[2]; //次駅着時刻S
+			panel[111] = g_tims.HiddenLine[D01ABnum] ? 24 : g_tims.NextTime[0]; //次駅着時刻H
+			panel[112] = g_tims.HiddenLine[D01ABnum] ? 60 : g_tims.NextTime[1]; //次駅着時刻M
+			panel[113] = g_tims.HiddenLine[D01ABnum] ? 12 : g_tims.NextTime[2]; //次駅着時刻S
 			//panel[207] = g_tims.HiddenLine[D01ABnum] ? 0 : g_tims.NextTrack; //次駅着番線
 		}
 		// サウンド出力
