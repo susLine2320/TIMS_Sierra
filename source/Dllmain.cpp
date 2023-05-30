@@ -125,7 +125,7 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 	//メーター表示器
 	if (snp2Output != 1) //自炊TIMS形式
 	{
-		if (EMeter != 0)
+		if (EMeter != 0) //メーター表示器を出力
 		{
 			// 電流計
 			panel[21] = g_meter.AMMeterD[4]; //電流計[符号]
@@ -170,7 +170,7 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 			panel[30] = g_meter.BrakeDelay; //ブレーキ指令
 			panel[31] = g_meter.BrakeDelay == g_emgBrake ? 1 : 0; //非常ブレーキ
 		}
-		if (EVmeter != 0)
+		if (EVmeter != 0) //電圧を出力
 		{
 			//電圧類
 			panel[217] = g_dead.AC; //交流
@@ -398,6 +398,250 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 		sound[15] = g_spp.HaltChime; //停車チャイム
 		sound[16] = g_spp.PassAlarm; //通過チャイム
 		sound[17] = g_spp.HaltChime2; //停車チャイムループ
+	}
+	else //snp2互換モード
+	{
+		if (EVmeter != 0) //電圧を出力
+		{
+			//電圧類
+			panel[60] = g_dead.AC; //交流
+			panel[61] = g_dead.DC; //直流
+			panel[62] = g_dead.CVacc; //制御電圧異常
+			panel[63] = g_dead.CVacc10; //制御電圧[10位]
+			panel[64] = g_dead.CVacc1; //制御電圧[1位]
+			panel[65] = g_dead.ACacc; //交流電圧異常
+			panel[66] = g_dead.ACacc10000; //交流電圧[10000位]
+			panel[67] = g_dead.ACacc1000; //交流電圧[1000位]
+			panel[68] = g_dead.ACacc100; //交流電圧[100位]
+			panel[69] = g_dead.DCacc; //直流電圧異常
+			panel[70] = g_dead.DCacc1000; //直流電圧[1000位]
+			panel[71] = g_dead.DCacc100; //直流電圧[100位]
+			panel[72] = g_dead.DCacc10; //直流電圧[10位]
+			panel[73] = g_dead.Cvmeter; //制御指針
+			panel[74] = g_dead.Acmeter; //交流指針
+			panel[75] = g_dead.Dcmeter; //直流指針
+			panel[76] = g_dead.Accident; //事故
+			panel[77] = g_dead.Tp; //三相
+			panel[78] = g_dead.VCB; //VCB
+			panel[79] = g_dead.VCB_ON; //VCB全入
+			panel[80] = g_dead.VCB_OFF; //VCB全切
+			panel[81] = g_dead.alert_ACDC > 0 ? g_dead.alert_ACDC + ((g_time % 800) / 400) : 0; //交直切換
+		}
+		if (EMeter != 0) //メーター表示器を出力
+		{
+			// 電流計
+			/*
+			panel[21] = g_meter.AMMeterD[4]; //電流計[符号]
+			panel[22] = g_meter.AMMeterD[0]; //電流計[1000位]
+			panel[23] = g_meter.AMMeterD[1]; //電流計[100位]
+			panel[24] = g_meter.AMMeterD[2]; //電流計[10位]
+			panel[25] = g_meter.AMMeterD[3]; //電流計[1位]
+			*/
+			panel[234] = g_meter.AMMeterA[1]; //電流計[指針]
+			//panel[27] = g_meter.AMMeter[0]; //電流グラフ（+）
+			//panel[28] = g_meter.AMMeter[1]; //電流グラフ（-）
+			//ブレーキシリンダ・元空気ダメ
+			if (BCMRType == 0)
+			{
+				panel[229] = g_meter.BcCaution ? ((g_time % 1000) / 500) : 0; //200kPa警告
+				panel[235] = g_meter.BCMeter[0]; //BCグラフ(0～180kPa）
+				panel[236] = g_meter.BCMeter[1]; //BCグラフ(200～380kPa）
+				panel[237] = g_meter.BCMeter[2]; //BCグラフ(400～580kPa）
+				panel[238] = g_meter.BCMeter[3]; //BCグラフ(600～780kPa）
+				panel[240] = g_meter.MRMeter[0]; //MRグラフ(750～795kPa）
+				panel[241] = g_meter.MRMeter[1]; //MRグラフ(800～845kPa）
+				panel[242] = g_meter.MRMeter[2]; //MRグラフ(850～895kPa）
+			}
+			// ブレーキシリンダ・元空気ダメ（デジタル表示）
+			else
+			{
+				panel[229] = g_meter.BCPressD[0]; //ブレーキシリンダ[100位]
+				panel[235] = g_meter.BCPressD[1]; //ブレーキシリンダ[10位]
+				panel[236] = g_meter.BCPressD[2]; //ブレーキシリンダ[1位]
+				panel[237] = g_meter.BCPress; //ブレーキシリンダ[指針]
+				panel[238] = g_meter.MRPressD[0]; //元空気ダメ[100位]
+				panel[240] = g_meter.MRPressD[1]; //元空気ダメ[10位]
+				panel[241] = g_meter.MRPressD[2]; //元空気ダメ[1位]
+				panel[242] = g_meter.MRPress; //元空気ダメ[指針]
+			}
+			// 速度計
+			panel[231] = g_meter.SpeedD[0]; //速度計[100位]
+			panel[232] = g_meter.SpeedD[1]; //速度計[10位]
+			panel[233] = g_meter.SpeedD[2]; //速度計[1位]
+			panel[230] = g_meter.Speed; //速度計[指針]
+			// ブレーキ指令計
+			//panel[32] = g_meter.AccelDelay; //力行指令
+			panel[228] = g_meter.BrakeDelay; //ブレーキ指令
+			//panel[31] = g_meter.BrakeDelay == g_emgBrake ? 1 : 0; //非常ブレーキ
+		}
+		//TIMS上部表示
+		if (EUD != 0)
+		{
+			// 時計
+			panel[10] = (g_time / 3600000) % 24; //デジタル時
+			panel[11] = g_time / 60000 % 60; //デジタル分
+			panel[12] = g_time / 1000 % 60; //デジタル秒
+			// TIMS速度計
+			panel[244] = g_tims.TimsSpeed[0] == 10 || g_tims.TimsSpeed[0] == 0 ? fabs(g_tims.TimsSpeed[0] - 10) : g_tims.TimsSpeed[0]; //TIMS速度計[100位]
+			panel[245] = g_tims.TimsSpeed[1] == 10 || g_tims.TimsSpeed[1] == 0 ? fabs(g_tims.TimsSpeed[1] - 10) : g_tims.TimsSpeed[1]; //TIMS速度計[10位]
+			panel[246] = g_tims.TimsSpeed[2] == 10 || g_tims.TimsSpeed[2] == 0 ? fabs(g_tims.TimsSpeed[2] - 10) : g_tims.TimsSpeed[2]; //TIMS速度計[1位]
+			// 走行距離
+			panel[207] = g_tims.Distance[0]; //走行距離[km]
+			panel[208] = g_tims.Distance[1] == 10 || g_tims.Distance[1] == 0 ? fabs(g_tims.Distance[1] - 10) : g_tims.Distance[1]; //走行距離[100m]
+			//panel[105] = g_tims.Distance[2]; //走行距離[10m]
+			// 矢印
+			panel[205] = g_tims.ArrowDirection; //進行方向矢印
+			// ユニット表示灯
+			panel[216] = g_tims.UnitState[0]; //ユニット表示灯1
+			panel[217] = g_tims.UnitState[1]; //ユニット表示灯2
+			panel[218] = g_tims.UnitState[2]; //ユニット表示灯3
+			panel[219] = g_tims.UnitState[3]; //ユニット表示灯4
+			panel[213] = g_tims.UnitTims[0]; //TIMSユニット表示1
+			panel[214] = g_tims.UnitTims[1]; //TIMSユニット表示2
+			panel[215] = g_tims.UnitTims[2]; //TIMSユニット表示3
+			//panel[108] = g_tims.UnitTims[3]; //TIMSユニット表示4
+		}
+		if (ETIMS != 0)
+		{
+			//TIMS全般表示
+			panel[199] = g_tims.TrainArrow; //行路表矢印
+			panel[100] = g_tims.Kind; //列車種別
+			panel[101] = g_tims.Number[0] == 10 || g_tims.Number[0] == 0 ? fabs(g_tims.Number[0] - 10) : g_tims.Number[0]; //列車番号[1000位]
+			panel[102] = g_tims.Number[1] == 10 || g_tims.Number[1] == 0 ? fabs(g_tims.Number[1] - 10) : g_tims.Number[1]; //列車番号[100位]
+			panel[103] = g_tims.Number[2] == 10 || g_tims.Number[2] == 0 ? fabs(g_tims.Number[2] - 10) : g_tims.Number[2]; //列車番号[10位]
+			panel[104] = g_tims.Number[3] == 10 || g_tims.Number[3] == 0 ? fabs(g_tims.Number[3] - 10) : g_tims.Number[3]; //列車番号[1位]
+			panel[105] = g_tims.Charactor; //列車番号[記号]
+
+			panel[114] = g_tims.Number[3] != 0 ? 1 : 0; //設定完了
+			panel[118] = g_tims.PassMode; //通過設定
+			//panel[119] = g_tims.NextBlinkLamp; //次駅停車表示灯
+			panel[106] = g_tims.From; //運行パターン始発
+			panel[107] = g_tims.Destination; //運行パターン行先
+			//panel[208] = g_tims.For; //列車行先
+			panel[108] = g_tims.This; //自駅（TIS用）
+			panel[109] = g_tims.Next; //次駅
+
+			// スタフテーブル
+			//電列共通
+			panel[130] = g_tims.HiddenLine[0] ? 0 : g_tims.Station[0]; //駅名表示1
+			panel[131] = g_tims.HiddenLine[1] ? 0 : g_tims.Station[1]; //駅名表示2
+			panel[132] = g_tims.HiddenLine[2] ? 0 : g_tims.Station[2]; //駅名表示3
+			panel[133] = g_tims.HiddenLine[3] ? 0 : g_tims.Station[3]; //駅名表示4
+			panel[134] = g_tims.HiddenLine[4] ? 0 : g_tims.Station[4]; //駅名表示5
+
+			panel[140] = g_tims.HiddenLine[0] ? 24 : g_tims.Arrive[0][0] == 0 || g_tims.Arrive[0][0] == 24 ? fabs(g_tims.Arrive[0][0] - 24) : g_tims.Arrive[0][0]; //到着時刻1H
+			panel[141] = g_tims.HiddenLine[0] ? 60 : g_tims.Arrive[0][1] == 0 || g_tims.Arrive[0][1] == 60 ? fabs(g_tims.Arrive[0][1] - 60) : g_tims.Arrive[0][1]; //到着時刻1M
+			panel[142] = g_tims.HiddenLine[0] ? 12 : g_tims.Arrive[0][2] == 0 || g_tims.Arrive[0][2] == 12 ? fabs(g_tims.Arrive[0][2] - 12) : g_tims.Arrive[0][2]; //到着時刻1S
+			panel[143] = g_tims.HiddenLine[1] ? 24 : g_tims.Arrive[1][0] == 0 || g_tims.Arrive[1][0] == 24 ? fabs(g_tims.Arrive[1][0] - 24) : g_tims.Arrive[1][0]; //到着時刻2H
+			panel[144] = g_tims.HiddenLine[1] ? 60 : g_tims.Arrive[1][1] == 0 || g_tims.Arrive[1][1] == 60 ? fabs(g_tims.Arrive[1][1] - 60) : g_tims.Arrive[1][1]; //到着時刻2M
+			panel[145] = g_tims.HiddenLine[1] ? 12 : g_tims.Arrive[1][2] == 0 || g_tims.Arrive[1][2] == 12 ? fabs(g_tims.Arrive[1][2] - 12) : g_tims.Arrive[1][2]; //到着時刻2S
+			panel[146] = g_tims.HiddenLine[2] ? 24 : g_tims.Arrive[2][0] == 0 || g_tims.Arrive[2][0] == 24 ? fabs(g_tims.Arrive[2][0] - 24) : g_tims.Arrive[2][0]; //到着時刻3H
+			panel[147] = g_tims.HiddenLine[2] ? 60 : g_tims.Arrive[2][1] == 0 || g_tims.Arrive[2][1] == 60 ? fabs(g_tims.Arrive[2][1] - 60) : g_tims.Arrive[2][1]; //到着時刻3M
+			panel[148] = g_tims.HiddenLine[2] ? 12 : g_tims.Arrive[2][2] == 0 || g_tims.Arrive[2][2] == 12 ? fabs(g_tims.Arrive[2][2] - 12) : g_tims.Arrive[2][2]; //到着時刻3S
+			panel[149] = g_tims.HiddenLine[3] ? 24 : g_tims.Arrive[3][0] == 0 || g_tims.Arrive[3][0] == 24 ? fabs(g_tims.Arrive[3][0] - 24) : g_tims.Arrive[3][0]; //到着時刻4H
+			panel[150] = g_tims.HiddenLine[3] ? 60 : g_tims.Arrive[3][1] == 0 || g_tims.Arrive[3][1] == 60 ? fabs(g_tims.Arrive[3][1] - 60) : g_tims.Arrive[3][1]; //到着時刻4M
+			panel[151] = g_tims.HiddenLine[3] ? 12 : g_tims.Arrive[3][2] == 0 || g_tims.Arrive[3][2] == 12 ? fabs(g_tims.Arrive[3][2] - 12) : g_tims.Arrive[3][2]; //到着時刻4S
+			panel[152] = g_tims.HiddenLine[4] ? 24 : g_tims.Arrive[4][0] == 0 || g_tims.Arrive[4][0] == 24 ? fabs(g_tims.Arrive[4][0] - 24) : g_tims.Arrive[4][0]; //到着時刻5H
+			panel[153] = g_tims.HiddenLine[4] ? 60 : g_tims.Arrive[4][1] == 0 || g_tims.Arrive[4][1] == 60 ? fabs(g_tims.Arrive[4][1] - 60) : g_tims.Arrive[4][1]; //到着時刻5M
+			panel[154] = g_tims.HiddenLine[4] ? 12 : g_tims.Arrive[4][2] == 0 || g_tims.Arrive[4][2] == 12 ? fabs(g_tims.Arrive[4][2] - 12) : g_tims.Arrive[4][2]; //到着時刻5S
+
+			panel[160] = g_tims.HiddenLine[0] ? 24 : g_tims.Leave[0][0] == 0 || g_tims.Leave[0][0] == 24 ? fabs(g_tims.Leave[0][0] - 24) : g_tims.Leave[0][0]; //出発時刻1H
+			panel[161] = g_tims.HiddenLine[0] ? 60 : g_tims.Leave[0][1] == 0 || g_tims.Leave[0][1] == 60 ? fabs(g_tims.Leave[0][1] - 60) : g_tims.Leave[0][1]; //出発時刻1M
+			panel[162] = g_tims.HiddenLine[0] ? 12 : g_tims.Leave[0][2] == 0 || g_tims.Leave[0][2] == 12 ? fabs(g_tims.Leave[0][2] - 12) : g_tims.Leave[0][2]; //出発時刻1S
+			panel[163] = g_tims.HiddenLine[1] ? 24 : g_tims.Leave[1][0] == 0 || g_tims.Leave[1][0] == 24 ? fabs(g_tims.Leave[1][0] - 24) : g_tims.Leave[1][0]; //出発時刻2H
+			panel[164] = g_tims.HiddenLine[1] ? 60 : g_tims.Leave[1][1] == 0 || g_tims.Leave[1][1] == 60 ? fabs(g_tims.Leave[1][1] - 60) : g_tims.Leave[1][1]; //出発時刻2M
+			panel[165] = g_tims.HiddenLine[1] ? 12 : g_tims.Leave[1][2] == 0 || g_tims.Leave[1][2] == 12 ? fabs(g_tims.Leave[1][2] - 12) : g_tims.Leave[1][2]; //出発時刻2S
+			panel[166] = g_tims.HiddenLine[2] ? 24 : g_tims.Leave[2][0] == 0 || g_tims.Leave[2][0] == 24 ? fabs(g_tims.Leave[2][0] - 24) : g_tims.Leave[2][0]; //出発時刻3H
+			panel[167] = g_tims.HiddenLine[2] ? 60 : g_tims.Leave[2][1] == 0 || g_tims.Leave[2][1] == 60 ? fabs(g_tims.Leave[2][1] - 60) : g_tims.Leave[2][1]; //出発時刻3M
+			panel[168] = g_tims.HiddenLine[2] ? 12 : g_tims.Leave[2][2] == 0 || g_tims.Leave[2][2] == 12 ? fabs(g_tims.Leave[2][2] - 12) : g_tims.Leave[2][2]; //出発時刻3S
+			panel[169] = g_tims.HiddenLine[3] ? 24 : g_tims.Leave[3][0] == 0 || g_tims.Leave[3][0] == 24 ? fabs(g_tims.Leave[3][0] - 24) : g_tims.Leave[3][0]; //出発時刻4H
+			panel[170] = g_tims.HiddenLine[3] ? 60 : g_tims.Leave[3][1] == 0 || g_tims.Leave[3][1] == 60 ? fabs(g_tims.Leave[3][1] - 60) : g_tims.Leave[3][1]; //出発時刻4M
+			panel[171] = g_tims.HiddenLine[3] ? 12 : g_tims.Leave[3][2] == 0 || g_tims.Leave[3][2] == 12 ? fabs(g_tims.Leave[3][2] - 12) : g_tims.Leave[3][2]; //出発時刻4S
+			panel[172] = g_tims.HiddenLine[4] ? 24 : g_tims.Leave[4][0] == 0 || g_tims.Leave[4][0] == 24 ? fabs(g_tims.Leave[4][0] - 24) : g_tims.Leave[4][0]; //出発時刻5H
+			panel[173] = g_tims.HiddenLine[4] ? 60 : g_tims.Leave[4][1] == 0 || g_tims.Leave[4][1] == 60 ? fabs(g_tims.Leave[4][1] - 60) : g_tims.Leave[4][1]; //出発時刻5M
+			panel[174] = g_tims.HiddenLine[4] ? 12 : g_tims.Leave[4][2] == 0 || g_tims.Leave[4][2] == 12 ? fabs(g_tims.Leave[4][2] - 12) : g_tims.Leave[4][2]; //出発時刻5S
+
+			panel[190] = g_tims.HiddenLine[0] ? 0 : g_tims.Track[0]; //次駅番線1
+			panel[191] = g_tims.HiddenLine[1] ? 0 : g_tims.Track[1]; //次駅番線2
+			panel[192] = g_tims.HiddenLine[2] ? 0 : g_tims.Track[2]; //次駅番線3
+			panel[193] = g_tims.HiddenLine[3] ? 0 : g_tims.Track[3]; //次駅番線4
+			panel[194] = g_tims.HiddenLine[4] ? 0 : g_tims.Track[4]; //次駅番線5
+
+			//列車スタフ
+			panel[135] = g_tims.HiddenLine[5] ? 0 : g_tims.Station[5]; //駅名表示6
+			panel[155] = g_tims.HiddenLine[5] ? 24 : g_tims.Arrive[5][0] == 0 || g_tims.Arrive[5][0] == 24 ? fabs(g_tims.Arrive[5][0] - 24) : g_tims.Arrive[5][0]; //到着時刻6H
+			panel[156] = g_tims.HiddenLine[5] ? 60 : g_tims.Arrive[5][1] == 0 || g_tims.Arrive[5][1] == 60 ? fabs(g_tims.Arrive[5][1] - 60) : g_tims.Arrive[5][1]; //到着時刻6M
+			panel[157] = g_tims.HiddenLine[5] ? 12 : g_tims.Arrive[5][2] == 0 || g_tims.Arrive[5][2] == 12 ? fabs(g_tims.Arrive[5][2] - 12) : g_tims.Arrive[5][2]; //到着時刻6S
+			panel[175] = g_tims.HiddenLine[5] ? 24 : g_tims.Leave[5][0] == 0 || g_tims.Leave[5][0] == 24 ? fabs(g_tims.Leave[5][0] - 24) : g_tims.Leave[5][0]; //出発時刻6H
+			panel[176] = g_tims.HiddenLine[5] ? 60 : g_tims.Leave[5][1] == 0 || g_tims.Leave[5][1] == 60 ? fabs(g_tims.Leave[5][1] - 60) : g_tims.Leave[5][1]; //出発時刻6M
+			panel[177] = g_tims.HiddenLine[5] ? 12 : g_tims.Leave[5][2] == 0 || g_tims.Leave[5][2] == 12 ? fabs(g_tims.Leave[5][2] - 12) : g_tims.Leave[5][2]; //出発時刻6S
+			panel[195] = g_tims.HiddenLine[5] ? 0 : g_tims.Track[5]; //次駅番線6
+
+			panel[180] = g_tims.HiddenLine[0] ? 0 : g_tims.Span[0][0]; //駅間走行時間1M
+			panel[181] = g_tims.HiddenLine[0] ? 0 : g_tims.Span[0][1]; //駅間走行時間1S
+			panel[182] = g_tims.HiddenLine[1] ? 0 : g_tims.Span[1][0]; //駅間走行時間2M
+			panel[183] = g_tims.HiddenLine[1] ? 0 : g_tims.Span[1][1]; //駅間走行時間2S
+			panel[184] = g_tims.HiddenLine[2] ? 0 : g_tims.Span[2][0]; //駅間走行時間3M
+			panel[185] = g_tims.HiddenLine[2] ? 0 : g_tims.Span[2][1]; //駅間走行時間3S
+			panel[186] = g_tims.HiddenLine[3] ? 0 : g_tims.Span[3][0]; //駅間走行時間4M
+			panel[187] = g_tims.HiddenLine[3] ? 0 : g_tims.Span[3][1]; //駅間走行時間4S
+			//panel[188] = g_tims.HiddenLine[4] ? 0 : g_tims.Span[4][0]; //駅間走行時間5M
+			//panel[189] = g_tims.HiddenLine[4] ? 0 : g_tims.Span[4][1]; //駅間走行時間5S
+
+			panel[200] = g_tims.HiddenLine[0] ? 0 : g_tims.LimitA[0]; //制限速度1IN
+			//panel[189] = g_tims.HiddenLine[0] ? 0 : g_tims.LimitL[0]; //制限速度1OUT
+			panel[201] = g_tims.HiddenLine[1] ? 0 : g_tims.LimitA[1]; //制限速度2IN
+			//panel[191] = g_tims.HiddenLine[1] ? 0 : g_tims.LimitL[1]; //制限速度2OUT
+			panel[202] = g_tims.HiddenLine[2] ? 0 : g_tims.LimitA[2]; //制限速度3IN
+			//panel[193] = g_tims.HiddenLine[2] ? 0 : g_tims.LimitL[2]; //制限速度3OUT
+			panel[203] = g_tims.HiddenLine[3] ? 0 : g_tims.LimitA[3]; //制限速度4IN
+			//panel[195] = g_tims.HiddenLine[3] ? 0 : g_tims.LimitL[3]; //制限速度4OUT
+			panel[204] = g_tims.HiddenLine[4] ? 0 : g_tims.LimitA[4]; //制限速度5IN
+			//panel[197] = g_tims.HiddenLine[4] ? 0 : g_tims.LimitL[4]; //制限速度5OUT
+			//panel[198] = g_tims.HiddenLine[5] ? 0 : g_tims.LimitA[5]; //制限速度6IN
+			//panel[199] = g_tims.HiddenLine[5] ? 0 : g_tims.LimitL[5]; //制限速度6OUT
+
+			panel[198] = g_tims.Last; //降車駅
+			panel[137] = g_tims.LastTimeA[0]; //降車駅着時刻H
+			panel[138] = g_tims.LastTimeA[1]; //降車駅着時刻M
+			panel[139] = g_tims.LastTimeA[2]; //降車駅着時刻S
+			//panel[187] = g_tims.LastTimeL[0]; //降車駅発時刻H
+			//panel[188] = g_tims.LastTimeL[1]; //降車駅発時刻M
+			//panel[189] = g_tims.LastTimeL[2]; //降車駅発時刻S
+			panel[197] = g_tims.LastTrack; //降車駅番線
+
+			//panel[191] = g_tims.AfterKind; //列車種別
+			panel[119] = g_tims.AfterNumber[0]; //列車番号[1000位]
+			panel[120] = g_tims.AfterNumber[1]; //列車番号[100位]
+			panel[121] = g_tims.AfterNumber[2]; //列車番号[10位]
+			panel[122] = g_tims.AfterNumber[3]; //列車番号[1位]
+			panel[123] = g_tims.AfterChara; //列車番号[記号]
+
+			panel[124] = g_tims.AfterTime[0][0]; //次行路着時刻H
+			panel[125] = g_tims.AfterTime[0][1]; //次行路着時刻M
+			panel[126] = g_tims.AfterTime[0][2]; //次行路着時刻S
+			panel[127] = g_tims.AfterTime[1][0]; //次行路発時刻H
+			panel[128] = g_tims.AfterTime[1][1]; //次行路発時刻M
+			panel[129] = g_tims.AfterTime[1][2]; //次行路発時刻S
+
+			//次駅表示
+			panel[110] = g_tims.HiddenLine[D01ABnum] ? 0 : (g_tims.Next * g_tims.NextBlink); //駅名表示（次駅、点滅する）
+			panel[111] = g_tims.HiddenLine[D01ABnum] ? 0 : g_tims.NextTime[0]; //次駅着時刻H
+			panel[112] = g_tims.HiddenLine[D01ABnum] ? 0 : g_tims.NextTime[1]; //次駅着時刻M
+			panel[113] = g_tims.HiddenLine[D01ABnum] ? 0 : g_tims.NextTime[2]; //次駅着時刻S
+			//panel[207] = g_tims.HiddenLine[D01ABnum] ? 0 : g_tims.NextTrack; //次駅着番線
+		}
+		// サウンド出力
+		sound[101] = g_sub.AirApply; //ブレーキ昇圧音
+		sound[103] = g_sub.AirApplyEmg; //ブレーキ昇圧音（非常）
+		sound[100] = g_sub.AirHigh; //非常ブレーキ緩解音
+		sound[102] = g_sub.EmgAnnounce; //非常ブレーキ放送
+		sound[105] = g_sub.UpdateInfo; //運行情報更新
+
+		sound[17] = g_spp.HaltChime3; //停車チャイムループ（減少しない）
+		sound[14] = g_spp.HaltChime; //停車チャイム
+		sound[15] = g_spp.PassAlarm; //通過チャイム
+		sound[16] = g_spp.HaltChime2; //停車チャイムループ
 	}
 
     return g_output;

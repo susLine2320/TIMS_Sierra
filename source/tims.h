@@ -366,10 +366,10 @@ public:
 	void SetNumber(int data, int chara)
 	{
 		m_charactor = chara; //記号は下2桁
-		m_Number[0] = data >= 1000 ? (data / 1000) % 10 == 0 ? 10 : (data / 1000) % 10 : 0;
-		m_Number[1] = data >= 100 ? (data / 100) % 10 == 0 ? 10 : (data / 100) % 10 : 0;
-		m_Number[2] = data >= 10 ? (data / 10) % 10 == 0 ? 10 : (data / 10) % 10 : 0;
-		m_Number[3] = data % 10 == 0 ? 10 : data % 10;
+		m_Number[0] = data >= 1000 ? (data / 1000) % 10 == 0 ? 10 : (data / 1000) % 10 : 0; //1000未満は0，その他は数値通り
+		m_Number[1] = data >= 100 ? (data / 100) % 10 == 0 ? 10 : (data / 100) % 10 : 0; //100未満は0，0は10，その他は数値通り
+		m_Number[2] = data >= 10 ? (data / 10) % 10 == 0 ? 10 : (data / 10) % 10 : 0; //10未満は0，0は10，その他は数値通り
+		m_Number[3] = data % 10 == 0 ? 10 : data % 10; //0は10，その他は数値通り
 	}
 
 	//運行区間の設定（104）
